@@ -1,0 +1,158 @@
+{
+  "name": "Grade_Capital_Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://queue.fal.run/fal-ai/flux-pro/v1.1-ultra",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prompt\": \"{{ $json.prompt }}. Style: High-end fintech, Grade Capital colors (Gold #FEBE2F and Black #151517), Poppins typography, premium 4K quality, minimalist and institutional.\",\n  \"image_size\": \"landscape_16_9\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "a0a43df7-1b55-4169-ac87-ae610f615d48",
+      "name": "Submit_To_Fal",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LLaiwtYIA4IJD1Eo",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "11a9f72a-62f2-4c59-a945-b30c3f647235",
+      "name": "Wait",
+      "webhookId": "72dca3b6-8fbc-4b9a-bdb9-12ab2a725347"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.status_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "a2505218-5e78-4ded-82f1-16c22280cd8b",
+      "name": "Get_Final_Image",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LLaiwtYIA4IJD1Eo",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"image_url\": \"{{ $json.images[0].url }}\",\n  \"status\": \"{{ $json.status }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        832,
+        0
+      ],
+      "id": "dfcb721a-a94e-454e-a7bc-00f91adfe488",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "prompt"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "68e796ac-878b-46e2-aada-bd06c39b9963",
+      "name": "Execute Workflow Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Submit_To_Fal": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Get_Final_Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Final_Image": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Submit_To_Fal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3eb12540-0dc1-46d2-a1cd-903a0c26683b",
+  "meta": {
+    "instanceId": "289ee700a8597fa022361bd92deb937e47be736e12cf6e93e6726f9fe0e402c9"
+  },
+  "id": "4uhV9SG8gEQRGLJU",
+  "tags": []
+}

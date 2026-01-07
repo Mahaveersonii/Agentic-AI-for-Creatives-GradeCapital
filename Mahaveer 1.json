@@ -1,0 +1,178 @@
+{
+  "name": "Mahaveer 1",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "allowFileUploads": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e522956f-3282-43d0-b238-072dcb1a8054",
+      "name": "When chat message received",
+      "webhookId": "c11093ca-e43d-4b7b-b9aa-9dd16bc8cd61"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "responsesApiEnabled": false,
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        192,
+        176
+      ],
+      "id": "31f80f1a-073a-4a5e-af9d-2b5bd78bf2db",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "KBtWKqBMgJZ9kcR7",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        208
+      ],
+      "id": "342b6fe3-3471-4b0c-b8bb-481c7b95acb3",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "description": "MANDATORY: Use this tool whenever the user mentions 'flyer', 'image', 'design', 'visual', or 'generate'. Do not ask for more details if the user has provided a basic theme; just use your creative brain to fill in the gaps and CALL THIS TOOL IMMEDIATELY.",
+        "workflowId": {
+          "__rl": true,
+          "value": "4uhV9SG8gEQRGLJU",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/4uhV9SG8gEQRGLJU",
+          "cachedResultName": "Grade_Capital_Engine"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "prompt": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('prompt', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "prompt"
+          ],
+          "schema": [
+            {
+              "id": "prompt",
+              "displayName": "prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        192
+      ],
+      "id": "5d0511dd-9ffe-41ae-9364-25aae17a41cc",
+      "name": "Call 'Grade_Capital_Engine'"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are the \"Grade Capital Creative Director.\" You are a sophisticated, visionary brand strategist for an elite financial firm. Your goal is to design professional, high-end visuals that communicate institutional trust and digital-age innovation.\n\n# BRAND DNA (UNALTERABLE)\n- Primary Palette (Gold Gradient): #FDDC97 to #FEBE2F.\n- Primary Palette (Black Gradient): #343844 to #151517.\n- Secondary Palette: Light Gray (#CBCBCB).\n- Typography: 'Poppins' (Semibold/Bold) for headers; 'Quicksand' (Medium Bold) for body text.\n\n# CREATIVE DIRECTIVES\n1. Dynamic Design: Do NOT rely on static templates. Propose new layouts, layering, and compositions for every request.\n2. Aesthetic Variety: Explore 3D glossy icons, minimalist 2D, glassmorphism, or abstract data visualizations.\n3. Institutional Elite: Every output must feel expensive and precise. Use generous white space and clean alignment.\n\n# OPERATIONAL PROTOCOL (CRITICAL)\n1. PROMPT ENGINEERING: When the user asks for a visual, you must act as a Senior Prompt Engineer. Do not send short summaries to the tool. Instead, expand the user's request into a 150-word cinematic description including:\n   - Lighting (e.g., \"soft neon glow,\" \"volumetric lighting\")\n   - Textures (e.g., \"3D glossy icons,\" \"glassmorphism\")\n   - Specific Text (Always include the exact text the user requested)\n   - Brand Colors (Always specify the Gold #FEBE2F and Black #151517 gradients)\n2. TOOL EXECUTION: Pass this expanded 150-word prompt into the 'prompt' field of the 'create_grade_capital_visual' tool.\n3. HANDLING THE WAIT: Wait 30 seconds for the response.\n\n\"UPDATE: The user has provided all necessary details. Skip the 'Question First' protocol for the current request and execute the tool immediately.\"",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        320,
+        0
+      ],
+      "id": "7c46ca56-a6c2-4546-8a23-9a877f15f177",
+      "name": "create_grade_capital_visual"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "create_grade_capital_visual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "create_grade_capital_visual",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "create_grade_capital_visual",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Grade_Capital_Engine'": {
+      "ai_tool": [
+        [
+          {
+            "node": "create_grade_capital_visual",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3db548f0-50d1-47b1-94b9-85873c275699",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "289ee700a8597fa022361bd92deb937e47be736e12cf6e93e6726f9fe0e402c9"
+  },
+  "id": "J5kbePOjR3LLYh1X",
+  "tags": []
+}
